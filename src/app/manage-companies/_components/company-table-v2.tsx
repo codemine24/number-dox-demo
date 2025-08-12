@@ -20,10 +20,15 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DatePicker from "@mui/lab/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CustomSelect } from "./custom-select";
 import { CustomInputField } from "./custom-input";
+import { Attachment } from "@mui/icons-material";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import dayjs from "dayjs";
+import { CustomDatePicker } from "./custom-date-picker";
+import { PickerValue } from "@mui/x-date-pickers/internals";
 
 interface TableRowData {
   id: number;
@@ -32,7 +37,7 @@ interface TableRowData {
   description: string;
   document: string;
   status: string;
-  filedDate: Date | null;
+  filedDate: PickerValue | null;
   dueDate: Date | null;
   reminder: boolean;
   repeat: boolean;
@@ -47,7 +52,7 @@ export const CompanyTableV2 = () => {
       frequency: "value1",
       description: "",
       document: "",
-      status: "Pending",
+      status: "value1",
       filedDate: null,
       dueDate: null,
       reminder: false,
@@ -166,52 +171,62 @@ export const CompanyTableV2 = () => {
                     </TableCell>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={row.document || ""}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "document", e.target.value)
-                      }
-                      variant="standard"
-                      fullWidth
-                    />
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      sx={{
+                        border: "1px solid",
+                        borderColor: "text.primary",
+                        color: "text.secondary",
+                        textTransform: "none",
+                        borderRadius: 2,
+                        py: 0,
+                        px: 1,
+                      }}
+                    >
+                      <AttachFileIcon
+                        sx={{ transform: "rotate(45deg)", fontSize: 20 }}
+                      />
+                      Attach
+                    </Button>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={row.status || ""}
-                      onChange={(e) =>
+                    <CustomSelect
+                      value={row.status}
+                      options={[
+                        { label: "Draft", value: "value1" },
+                        { label: "Publish", value: "value2" },
+                        { label: "Pending", value: "value3" },
+                      ]}
+                      onChange={(e: any) =>
                         handleInputChange(row.id, "status", e.target.value)
                       }
-                      variant="standard"
-                      fullWidth
                     />
                   </TableCell>
                   <TableCell>
-                    <DatePicker
+                    <DesktopDatePicker
+                      defaultValue={dayjs("2022-04-17")}
                       value={row.filedDate}
-                      onChange={(newValue) =>
-                        handleInputChange(row.id, "filedDate", newValue)
+                      onChange={(date: any) =>
+                        handleInputChange(row.id, "filedDate", date)
                       }
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" fullWidth />
-                      )}
                     />
                   </TableCell>
                   <TableCell>
-                    <DatePicker
-                      value={row.dueDate}
-                      onChange={(newValue) =>
-                        handleInputChange(row.id, "dueDate", newValue)
+                    <DesktopDatePicker
+                      defaultValue={dayjs("2022-04-17")}
+                      sx={{border: "none"}}
+                      onChange={(date: any) =>
+                        handleInputChange(row.id, "dueDate", date)
                       }
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" fullWidth />
-                      )}
                     />
                   </TableCell>
+                  <TableCell></TableCell>
                   <TableCell>
                     <Checkbox
                       checked={row.reminder || false}
                       onChange={(e) =>
-                        handleInputChange(row.id, "reminder", e.target.checked)
+                        handleInputChange(row.id, "filedDate", e.target.checked)
                       }
                     />
                   </TableCell>
@@ -223,18 +238,7 @@ export const CompanyTableV2 = () => {
                       }
                     />
                   </TableCell>
-                  <TableCell>
-                    <DatePicker
-                      value={row.lastUpdated}
-                      onChange={(newValue) =>
-                        handleInputChange(row.id, "lastUpdated", newValue)
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" fullWidth />
-                      )}
-                      disabled
-                    />
-                  </TableCell>
+                  <TableCell></TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleDeleteRow(row.id)}>
                       <DeleteIcon />
