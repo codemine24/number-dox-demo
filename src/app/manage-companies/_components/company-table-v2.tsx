@@ -1,34 +1,27 @@
-import * as React from "react";
+import AddIcon from "@mui/icons-material/Add";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
 import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Button,
-  IconButton,
-  Box,
-  Checkbox,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import DatePicker from "@mui/lab/DatePicker";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { CustomSelect } from "./custom-select";
-import { CustomInputField } from "./custom-input";
-import { Attachment } from "@mui/icons-material";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import dayjs from "dayjs";
-import { CustomDatePicker } from "./custom-date-picker";
 import { PickerValue } from "@mui/x-date-pickers/internals";
+import dayjs from "dayjs";
+import * as React from "react";
+import { CustomInputField } from "./custom-input";
+import { CustomSelect } from "./custom-select";
 
 interface TableRowData {
   id: number;
@@ -38,10 +31,10 @@ interface TableRowData {
   document: string;
   status: string;
   filedDate: PickerValue | null;
-  dueDate: Date | null;
-  reminder: boolean;
-  repeat: boolean;
-  lastUpdated: Date;
+  dueDate: PickerValue | null;
+  reminder: string;
+  repeat: string;
+  lastUpdated: PickerValue | null;
 }
 
 export const CompanyTableV2 = () => {
@@ -55,9 +48,9 @@ export const CompanyTableV2 = () => {
       status: "value1",
       filedDate: null,
       dueDate: null,
-      reminder: false,
-      repeat: false,
-      lastUpdated: new Date(),
+      reminder: "",
+      repeat: "",
+      lastUpdated: null,
     },
   ]);
 
@@ -71,9 +64,9 @@ export const CompanyTableV2 = () => {
       status: "Pending",
       filedDate: null,
       dueDate: null,
-      reminder: false,
-      repeat: false,
-      lastUpdated: new Date(),
+      reminder: "",
+      repeat: "",
+      lastUpdated: null,
     };
     setRows([...rows, newRow]);
   };
@@ -108,7 +101,13 @@ export const CompanyTableV2 = () => {
         </Button>
       </Box>
       <TableContainer component={Paper}>
-        <Table>
+        <Table
+          sx={{
+            "& .MuiTableCell-root": {
+              padding: "6px",
+            },
+          }}
+        >
           <TableHead>
             <TableRow sx={{ bgcolor: "secondary.main" }}>
               <TableCell sx={{ whiteSpace: "nowrap" }}>Doc type</TableCell>
@@ -212,37 +211,55 @@ export const CompanyTableV2 = () => {
                       }
                     />
                   </TableCell>
+
                   <TableCell>
                     <DesktopDatePicker
                       defaultValue={dayjs("2022-04-17")}
-                      sx={{border: "none"}}
+                      value={row.dueDate}
                       onChange={(date: any) =>
                         handleInputChange(row.id, "dueDate", date)
                       }
                     />
                   </TableCell>
-                  <TableCell></TableCell>
                   <TableCell>
-                    <Checkbox
-                      checked={row.reminder || false}
+                    <CustomInputField
+                      value={row.reminder || ""}
+                      placeholder="45"
                       onChange={(e) =>
-                        handleInputChange(row.id, "filedDate", e.target.checked)
+                        handleInputChange(row.id, "reminder", e.target.value)
                       }
                     />
                   </TableCell>
                   <TableCell>
-                    <Checkbox
-                      checked={row.repeat || false}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "repeat", e.target.checked)
+                    <CustomSelect
+                      value={row.repeat}
+                      options={[
+                        { label: "Daily", value: "value1" },
+                        { label: "Weekly", value: "value2" },
+                      ]}
+                      onChange={(e: any) =>
+                        handleInputChange(row.id, "repeat", e.target.value)
                       }
                     />
                   </TableCell>
-                  <TableCell></TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleDeleteRow(row.id)}>
-                      <DeleteIcon />
-                    </IconButton>
+                    <DesktopDatePicker
+                      defaultValue={dayjs("2022-04-17")}
+                      value={row.lastUpdated}
+                      onChange={(date: any) =>
+                        handleInputChange(row.id, "lastUpdated", date)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <IconButton onClick={() => handleDeleteRow(row.id)}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteRow(row.id)}>
+                        <EditIcon />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
                 <TableRow>
