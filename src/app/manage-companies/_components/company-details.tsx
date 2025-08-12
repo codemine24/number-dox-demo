@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -34,17 +34,15 @@ export const CompanyDetails = () => {
       <Button
         size="small"
         sx={{
-          bgcolor: 'success.main',
-          color: 'white',
+          bgcolor: "success.main",
+          color: "white",
           borderRadius: "10px",
           minWidth: "auto",
         }}
       >
         <Check />
       </Button>
-      <Typography>
-        Company details updated successfully
-      </Typography>
+      <Typography>Company details updated successfully</Typography>
     </Box>
   );
 
@@ -57,19 +55,37 @@ export const CompanyDetails = () => {
 
         {isEdit ? (
           <Box display="flex" alignItems="center" gap={1}>
-            <Button startIcon={<EditIcon />} variant="contained" size="small" onClick={handleSave}>Save</Button>
-            <Button variant="contained" color="error" size="small" onClick={() => setIsEdit(false)}>Cancel</Button>
+            <Button
+              startIcon={<EditIcon />}
+              variant="contained"
+              size="small"
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => setIsEdit(false)}
+            >
+              Cancel
+            </Button>
           </Box>
         ) : (
-          <Button startIcon={<EditIcon />} variant="contained" size="small" onClick={() => setIsEdit(true)}>Edit</Button>
+          <Button
+            startIcon={<EditIcon />}
+            variant="contained"
+            size="small"
+            onClick={() => setIsEdit(true)}
+            sx={{ borderRadius: 2, textTransform: "none" }}
+          >
+            Edit
+          </Button>
         )}
       </Box>
 
-      <Grid
-        container
-        mt={3}
-        spacing={1}
-      >
+      <Grid container mt={3} spacing={1}>
         <Grid size={{ xs: 12, md: 6, lg: 4, xl: 3 }}>
           <Typography variant="body2">Company Name</Typography>
           {isEdit ? (
@@ -77,7 +93,9 @@ export const CompanyDetails = () => {
               size="small"
               fullWidth
               value={companyDetails.name}
-              onChange={(e) => setCompanyDetails({ ...companyDetails, name: e.target.value })}
+              onChange={(e) =>
+                setCompanyDetails({ ...companyDetails, name: e.target.value })
+              }
             />
           ) : (
             <Typography variant="body2" color="text.secondary">
@@ -93,7 +111,9 @@ export const CompanyDetails = () => {
               size="small"
               fullWidth
               value={companyDetails.alias}
-              onChange={(e) => setCompanyDetails({ ...companyDetails, alias: e.target.value })}
+              onChange={(e) =>
+                setCompanyDetails({ ...companyDetails, alias: e.target.value })
+              }
             />
           ) : (
             <Typography variant="body2" color="text.secondary">
@@ -109,7 +129,9 @@ export const CompanyDetails = () => {
               size="small"
               fullWidth
               value={companyDetails.status}
-              onChange={(e) => setCompanyDetails({ ...companyDetails, status: e.target.value })}
+              onChange={(e) =>
+                setCompanyDetails({ ...companyDetails, status: e.target.value })
+              }
             />
           ) : (
             <Typography variant="body2" color="text.secondary">
@@ -125,7 +147,12 @@ export const CompanyDetails = () => {
               size="small"
               fullWidth
               value={companyDetails.companyNo}
-              onChange={(e) => setCompanyDetails({ ...companyDetails, companyNo: e.target.value })}
+              onChange={(e) =>
+                setCompanyDetails({
+                  ...companyDetails,
+                  companyNo: e.target.value,
+                })
+              }
             />
           ) : (
             <Typography variant="body2" color="text.secondary">
@@ -143,7 +170,7 @@ export const CompanyDetails = () => {
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         ContentProps={{
           sx: {
-            backgroundColor: '#caefca',
+            backgroundColor: "#caefca",
             color: "success.main",
             borderRadius: "8px",
             elevation: 0,

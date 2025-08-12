@@ -73,8 +73,10 @@ export const CompanyTableV2 = () => {
   ]);
 
   const handleAddRow = () => {
+    const newId =
+      rows.length > 0 ? Math.max(...rows.map((row) => row.id)) + 1 : 1;
     const newRow: TableRowData = {
-      id: 1,
+      id: newId,
       isRowEditable: true,
       docType: "value1",
       frequency: "weekly",
