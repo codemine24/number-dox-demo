@@ -22,6 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DatePicker from "@mui/lab/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CustomSelect } from "./custom-select";
 
 interface TableRowData {
   id: number;
@@ -120,29 +121,29 @@ export const CompanyTableV2 = () => {
               <React.Fragment key={row.id}>
                 <TableRow>
                   <TableCell>
-                    <TextField
-                      value={row.docType || ""}
-                      onChange={(e) =>
+                    <CustomSelect
+                      value={row.docType}
+                      options={[
+                        { value: "option1", label: "value1" },
+                        { value: "option2", label: "value2" },
+                        { value: "option3", label: "value3" },
+                      ]}
+                      onChange={(e: any) =>
                         handleInputChange(row.id, "docType", e.target.value)
                       }
-                      variant="standard"
-                      fullWidth
                     />
                   </TableCell>
                   <TableCell>
                     <FormControl fullWidth variant="standard">
-                      <Select
-                        value={row.frequency}
-                        onChange={(e) =>
-                          handleInputChange(row.id, "frequency", e.target.value)
-                        }
-                      >
-                        <MenuItem value="daily">Daily</MenuItem>
-                        <MenuItem value="weekly">Weekly</MenuItem>
-                        <MenuItem value="monthly">Monthly</MenuItem>
-                        <MenuItem value="quarterly">Quarterly</MenuItem>
-                        <MenuItem value="yearly">Yearly</MenuItem>
-                      </Select>
+                      <CustomSelect
+                        value="value"
+                        options={[
+                          { value: "option1", label: "value1" },
+                          { value: "option2", label: "value2" },
+                          { value: "option3", label: "value3" },
+                        ]}
+                        onChange={(e) => console.log(e)}
+                      />
                     </FormControl>
                   </TableCell>
                   <TableCell>
