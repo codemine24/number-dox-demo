@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import * as React from "react";
 import { CustomInputField } from "./custom-input";
 import { CustomSelect } from "./custom-select";
+import { AddDocumentModal } from "@/components/document-form-modal";
 
 interface TableRowData {
   id: number;
@@ -38,6 +39,17 @@ interface TableRowData {
 }
 
 export const CompanyTableV2 = () => {
+  const [openDocument, setOpenDocument] = React.useState<{
+    open: boolean;
+    document_id: number | null;
+    file_name: string | null;
+  }>({
+    open: false,
+    document_id: null,
+    file_name: null,
+  });
+  console.log('openDocument', openDocument);
+  
   const [rows, setRows] = React.useState<TableRowData[]>([
     {
       id: 1,
@@ -171,6 +183,13 @@ export const CompanyTableV2 = () => {
                   </TableCell>
                   <TableCell>
                     <Button
+                      onClick={() =>
+                        setOpenDocument({
+                          open: true,
+                          document_id: row.id,
+                          file_name: null,
+                        })
+                      }
                       variant="outlined"
                       component="label"
                       sx={{
@@ -186,7 +205,9 @@ export const CompanyTableV2 = () => {
                       <AttachFileIcon
                         sx={{ transform: "rotate(45deg)", fontSize: 20 }}
                       />
-                      Attach
+                      {openDocument.file_name && openDocument.document_id === row.id
+                        ? openDocument.file_name
+                        : "View"}
                     </Button>
                   </TableCell>
                   <TableCell>
@@ -276,6 +297,25 @@ export const CompanyTableV2 = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <AddDocumentModal
+        open={openDocument.open}
+        onClose={() =>
+          setOpenDocument({
+            open: false,
+            document_id: null,
+            file_name: null,
+          })
+        }
+        onSave={(value) =>
+          setOpenDocument({
+            open: false,
+            document_id: value.document_id,
+            file_name: value.file_name,
+          })
+        }
+        documentId={1}
+      />
     </LocalizationProvider>
   );
 };

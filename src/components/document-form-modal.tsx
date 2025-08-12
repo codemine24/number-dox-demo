@@ -28,16 +28,16 @@ interface FileItem {
 interface AddDocumentModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (data: { document_id: string | number; file_name: string }) => void;
-  documentId: string | number;
+  onSave: (data: { document_id: number; file_name: string }) => void;
+  documentId: number;
 }
 
-export default function AddDocumentModal({
+export const AddDocumentModal = ({
   open,
   onClose,
   onSave,
   documentId,
-}: AddDocumentModalProps) {
+}: AddDocumentModalProps) => {
   const [documentTitle, setDocumentTitle] = useState("");
   const [documents, setDocuments] = useState<FileItem[]>([
     { id: "1", name: "Field.pdf", size: 1024000 },
@@ -100,12 +100,10 @@ export default function AddDocumentModal({
   };
 
   const handleSave = () => {
-    console.log({ documentTitle, documents, notes });
     onSave({
       document_id: documentId,
       file_name: documents[0].name,
     });
-    onClose();
   };
 
   const formatFileSize = (bytes: number) => {
@@ -342,4 +340,4 @@ export default function AddDocumentModal({
       </DialogActions>
     </Dialog>
   );
-}
+};

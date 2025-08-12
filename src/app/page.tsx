@@ -1,6 +1,6 @@
 "use client";
 
-import AddDocumentModal from "@/components/document-form-modal";
+import {AddDocumentModal} from "@/components/document-form-modal";
 import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useState } from "react";
