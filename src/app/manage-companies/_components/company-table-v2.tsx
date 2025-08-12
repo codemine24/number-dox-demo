@@ -436,7 +436,7 @@ export const CompanyTableV2 = () => {
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <IconButton onClick={() => handleDeleteRow(row.id)}>
+                      <IconButton onClick={() => handleDeleteRow(row.id)} disabled={rows.length === 1}>
                         <DeleteOutlineIcon />
                       </IconButton>
                       <IconButton onClick={() => handleEditRow(row.id)}>
