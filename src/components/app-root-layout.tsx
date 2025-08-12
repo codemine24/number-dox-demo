@@ -10,11 +10,10 @@ const AppRootLayout = ({ children }: { children: React.ReactNode }) => {
                 maxHeight="calc(100vh - 64px)"
                 display="flex"
                 alignItems='start'
-                gap={2}
                 overflow="hidden"
             >
-                <Sidebar activeRoute="/" />
-                <Box flex={1}>{children}</Box>
+                <Sidebar />
+                <Box flex={1} p={2} height="calc(100vh - 64px)" sx={{ overflowY: "auto" }}>{children}</Box>
             </Box>
         </Box>)
 };

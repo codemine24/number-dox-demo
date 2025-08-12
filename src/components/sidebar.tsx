@@ -14,6 +14,7 @@ import {
     Box,
     Collapse,
     IconButton,
+    Link,
 } from "@mui/material"
 import {
     Dashboard as DashboardIcon,
@@ -26,23 +27,23 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "@mui/icons-material"
+import { usePathname } from "next/navigation"
 
-const drawerWidth = 240
+const drawerWidth = 260
 const collapsedDrawerWidth = 60
 
 interface MenuItem {
     text: string
     icon: React.ReactNode
+    href?: string
     active?: boolean
     children?: MenuItem[]
 }
 
-interface SidebarProps {
-    activeRoute: string
-}
 
-export default function Sidebar({ activeRoute }: SidebarProps) {
+export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true)
+    const path = usePathname()
     const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({})
 
     const handleToggleSidebar = () => {
@@ -57,26 +58,42 @@ export default function Sidebar({ activeRoute }: SidebarProps) {
     }
 
     const sidebarItems: MenuItem[] = [
-        { text: "Dashboard", icon: <DashboardIcon /> },
+        {
+            text: "Dashboard",
+            href: "/",
+            active: path === "/",
+            icon: <DashboardIcon />
+        },
         {
             text: "Manage Companies",
+            href: "/manage-companies",
             icon: <BusinessIcon />,
-            active: activeRoute === "manage-companies",
-            children: [
-                { text: "All Companies", icon: <CircleIcon sx={{ fontSize: 8 }} /> },
-                { text: "Active Companies", icon: <CircleIcon sx={{ fontSize: 8 }} /> },
-                { text: "Archived Companies", icon: <CircleIcon sx={{ fontSize: 8 }} /> },
-            ],
+            active: path === "/manage-companies",
         },
         {
             text: "Manage Users",
             icon: <PeopleIcon />,
             children: [
-                { text: "All Users", icon: <CircleIcon sx={{ fontSize: 8 }} /> },
-                { text: "Admin Users", icon: <CircleIcon sx={{ fontSize: 8 }} /> },
+                {
+                    text: "All Users",
+                    href: "/manage-users/all",
+                    active: path === "/manage-users/all",
+                    icon: <CircleIcon sx={{ fontSize: 8 }} />
+                },
+                {
+                    text: "Admin Users",
+                    href: "/manage-users/admin",
+                    active: path === "/manage-users/admin",
+                    icon: <CircleIcon sx={{ fontSize: 8 }} />
+                },
             ],
         },
-        { text: "Settings", icon: <SettingsIcon /> },
+        {
+            text: "Settings",
+            href: "/settings",
+            active: path === "/settings",
+            icon: <SettingsIcon />
+        },
     ]
 
     const renderMenuItem = (item: MenuItem, level = 0) => {
@@ -87,13 +104,14 @@ export default function Sidebar({ activeRoute }: SidebarProps) {
             <React.Fragment key={item.text}>
                 <ListItem disablePadding>
                     <ListItemButton
+                        component={Link}
+                        href={item.href}
                         onClick={() => hasChildren && handleToggleItem(item.text)}
                         sx={{
-                            pl: 2 + level * 2,
-                            backgroundColor: item.active ? "#1976d2" : "transparent",
+                            backgroundColor: item.active ? "primary.main" : "transparent",
                             color: item.active ? "white" : "inherit",
                             "&:hover": {
-                                backgroundColor: item.active ? "#1976d2" : "rgba(0, 0, 0, 0.04)",
+                                backgroundColor: item.active ? "primary.main" : "rgba(0, 0, 0, 0.04)",
                             },
                             minHeight: 48,
                         }}
@@ -109,7 +127,7 @@ export default function Sidebar({ activeRoute }: SidebarProps) {
                         </ListItemIcon>
                         {isOpen && (
                             <>
-                                <ListItemText primary={item.text} />
+                                <ListItemText primary={item.text} slotProps={{ primary: { fontSize: 14 } }} />
                                 {hasChildren && (isItemOpen ? <ExpandLess /> : <ExpandMore />)}
                             </>
                         )}
@@ -130,46 +148,47 @@ export default function Sidebar({ activeRoute }: SidebarProps) {
         <Drawer
             variant="permanent"
             sx={{
-                height: "100vh",
+                height: "calc(100vh - 64px)",
                 width: isOpen ? drawerWidth : collapsedDrawerWidth,
                 flexShrink: 0,
+                overflow: "visible",
                 transition: "width 0.3s",
                 "& .MuiDrawer-paper": {
                     width: isOpen ? drawerWidth : collapsedDrawerWidth,
                     boxSizing: "border-box",
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: "background.paper",
                     transition: "width 0.3s",
-                    overflowX: "hidden",
+                    overflow: "visible",
                     position: "relative",
+                    zIndex: 98,
                 },
             }}
         >
-            <Toolbar>
-                {isOpen && (
-                    <Typography variant="h6" sx={{ color: "#666", fontSize: "14px" }}>
-                        Annual Report
-                    </Typography>
-                )}
-                <IconButton
-                    onClick={handleToggleSidebar}
-                    sx={{
-                        position: "absolute",
-                        right: isOpen ? 8 : "50%",
-                        transform: isOpen ? "none" : "translateX(50%)",
-                        backgroundColor: "white",
-                        border: "1px solid #ddd",
-                        width: 24,
-                        height: 24,
-                        "&:hover": {
-                            backgroundColor: "#f0f0f0",
-                        },
-                    }}
-                >
-                    {isOpen ? <ChevronLeft fontSize="small" /> : <ChevronRight fontSize="small" />}
-                </IconButton>
-            </Toolbar>
+            {/* Toggle Button Toolbar */}
+            <IconButton
+                onClick={handleToggleSidebar}
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    transform: "translateX(50%)",
+                    zIndex: 99,
+                    color: "#fff",
+                    backgroundColor: "text.primary",
+                    width: 30,
+                    height: 30,
+                    "&:hover": {
+                        backgroundColor: "text.primary",
+                    },
+                }}
+            >
+                {isOpen ? <ChevronLeft fontSize="small" /> : <ChevronRight fontSize="small" />}
+            </IconButton>
+
+
             <Divider />
             <List>{sidebarItems.map((item) => renderMenuItem(item))}</List>
+
             {isOpen && (
                 <Box sx={{ mt: "auto", p: 2 }}>
                     <Typography variant="caption" color="textSecondary">
@@ -178,5 +197,6 @@ export default function Sidebar({ activeRoute }: SidebarProps) {
                 </Box>
             )}
         </Drawer>
+
     )
 }
