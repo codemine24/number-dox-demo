@@ -4,6 +4,7 @@ import { RootProvider } from "@/provider";
 import "@/styles/global.css";
 import { AppRootLayout } from "@/components/app-root-layout";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

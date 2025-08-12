@@ -1,251 +1,250 @@
-import { DataTable } from "@/components/data-table";
-import { Icon } from "@iconify/react";
-import { IconButton } from "@mui/material";
-import Box from "@mui/material/Box";
-import { GridColDef, GridRowModel, GridSortModel } from "@mui/x-data-grid";
 import * as React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Button,
+  IconButton,
+  Box,
+  Checkbox,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DatePicker from "@mui/lab/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-const rows: GridRowModel[] = [
-  {
-    id: 1,
-    docType: "Invoice",
-    frequency: "Monthly",
-    description: "Invoice for monthly subscription",
-    document: "invoice_august_2025.pdf",
-    date: "2025-08-01",
-    endDate: "2025-08-31",
-    dueDate: "2025-08-15",
-    reminder: "2025-08-10",
-    report: "finance_report_q3.pdf",
-    lastUpdated: "2025-08-01",
-  },
-  {
-    id: 2,
-    docType: "Report",
-    frequency: "Quarterly",
-    description: "Quarterly performance report",
-    document: "q3_performance.pdf",
-    date: "2025-07-01",
-    endDate: "2025-09-30",
-    dueDate: "2025-10-05",
-    reminder: "2025-09-25",
-    report: "summary_q3.docx",
-    lastUpdated: "2025-08-05",
-  },
-  {
-    id: 3,
-    docType: "Compliance",
-    frequency: "Yearly",
-    description: "Annual compliance document",
-    document: "compliance_2025.pdf",
-    date: "2025-01-01",
-    endDate: "2025-12-31",
-    dueDate: "2025-12-01",
-    reminder: "2025-11-15",
-    report: "compliance_summary.docx",
-    lastUpdated: "2025-06-30",
-  },
-  {
-    id: 4,
-    docType: "Contract",
-    frequency: "One-time",
-    description: "Signed partnership agreement",
-    document: "partnership_contract.pdf",
-    date: "2025-03-15",
-    endDate: "2027-03-15",
-    dueDate: "2025-03-15",
-    reminder: "2025-03-10",
-    report: "contract_summary.pdf",
-    lastUpdated: "2025-03-16",
-  },
-  {
-    id: 5,
-    docType: "Audit",
-    frequency: "Bi-Annual",
-    description: "Mid-year financial audit",
-    document: "audit_june_2025.pdf",
-    date: "2025-06-01",
-    endDate: "2025-06-30",
-    dueDate: "2025-07-15",
-    reminder: "2025-07-01",
-    report: "audit_findings.pdf",
-    lastUpdated: "2025-07-10",
-  },
-  {
-    id: 6,
-    docType: "Tax",
-    frequency: "Yearly",
-    description: "Corporate tax return",
-    document: "tax_return_2024.pdf",
-    date: "2025-04-15",
-    endDate: "2025-04-15",
-    dueDate: "2025-04-30",
-    reminder: "2025-04-25",
-    report: "tax_summary_2024.pdf",
-    lastUpdated: "2025-04-18",
-  },
-  {
-    id: 7,
-    docType: "Memo",
-    frequency: "As Needed",
-    description: "Internal update on policy changes",
-    document: "policy_update_memo.pdf",
-    date: "2025-08-10",
-    endDate: "2025-08-10",
-    dueDate: "2025-08-12",
-    reminder: "2025-08-11",
-    report: "policy_summary.docx",
-    lastUpdated: "2025-08-11",
-  },
-  {
-    id: 8,
-    docType: "Checklist",
-    frequency: "Weekly",
-    description: "Weekly task checklist",
-    document: "checklist_wk32_2025.xlsx",
-    date: "2025-08-04",
-    endDate: "2025-08-10",
-    dueDate: "2025-08-10",
-    reminder: "2025-08-09",
-    report: "tasks_summary.pdf",
-    lastUpdated: "2025-08-10",
-  },
-  {
-    id: 9,
-    docType: "Notice",
-    frequency: "As Needed",
-    description: "Notice of system maintenance",
-    document: "maintenance_notice.pdf",
-    date: "2025-08-05",
-    endDate: "2025-08-06",
-    dueDate: "2025-08-05",
-    reminder: "2025-08-04",
-    report: "downtime_report.pdf",
-    lastUpdated: "2025-08-06",
-  },
-  {
-    id: 10,
-    docType: "Plan",
-    frequency: "Monthly",
-    description: "Operational plan for August",
-    document: "august_plan.pdf",
-    date: "2025-08-01",
-    endDate: "2025-08-31",
-    dueDate: "2025-08-01",
-    reminder: "2025-07-31",
-    report: "ops_plan_summary.docx",
-    lastUpdated: "2025-08-01",
-  },
-];
+interface TableRowData {
+  id: number;
+  docType: string;
+  category: string;
+  frequency: string;
+  description: string;
+  document: string;
+  status: string;
+  filedDate: Date | null;
+  dueDate: Date | null;
+  reminder: boolean;
+  repeat: boolean;
+  lastUpdated: Date;
+}
 
-const columns: GridColDef[] = [
-  {
-    field: "docType",
-    headerName: "Doc. Type",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "frequency",
-    headerName: "Frequency",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    flex: 1,
-    sortable: false,
-    filterable: false,
-    minWidth: 200,
-  },
-  {
-    field: "document",
-    headerName: "Document",
-    flex: 1,
-    sortable: false,
-    filterable: false,
-    minWidth: 200,
-  },
-  {
-    field: "date",
-    headerName: "Date",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "endDate",
-    headerName: "End Date",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "dueDate",
-    headerName: "Due Date",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "reminder",
-    headerName: "Reminder",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "report",
-    headerName: "Report",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "lastUpdated",
-    headerName: "Last Updated",
-    flex: 1,
-    sortable: true,
-    filterable: true,
-    minWidth: 150,
-  },
-  {
-    field: "actions",
-    headerName: "Actions",
-    flex: 1,
-    sortable: false,
-    filterable: false,
-    renderCell: (params) => {
-      return (
-        <IconButton>
-          <Icon icon="material-symbols-light:delete-outline" />
-        </IconButton>
-      );
+export const CompanyTableV2 = () => {
+  const [rows, setRows] = React.useState<TableRowData[]>([
+    {
+      id: 1,
+      docType: "Invoice",
+      category: "Tax",
+      frequency: "weekly",
+      description: "",
+      document: "",
+      status: "Pending",
+      filedDate: null,
+      dueDate: null,
+      reminder: false,
+      repeat: false,
+      lastUpdated: new Date(),
     },
-  },
-];
+  ]);
 
-export function CompanyTableV2() {
-  const [sortModel, setSortModel] = React.useState<GridSortModel>([]);
+  const handleAddRow = () => {
+    const newRow: TableRowData = {
+      id: rows.length + 1,
+      name: "",
+      frequency: "weekly",
+      document: "",
+      dueDate: null,
+      reminder: false,
+      lastUpdated: new Date(),
+    };
+    setRows([...rows, newRow]);
+  };
+
+  const handleDeleteRow = (id: number) => {
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleInputChange = (
+    id: number,
+    field: keyof TableRowData,
+    value: any
+  ) => {
+    setRows(
+      rows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+    );
+  };
 
   return (
-    <Box mt={3}>
-      <DataTable
-        rows={rows}
-        columns={columns}
-        sortModel={sortModel}
-        onSortModelChange={setSortModel}
-      />
-    </Box>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleAddRow}
+          sx={{
+            borderRadius: 2,
+            textTransform: "none",
+          }}
+        >
+          Add
+        </Button>
+      </Box>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ bgcolor: "secondary.main" }}>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Doc type</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Frequency</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Description</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Document</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Status</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Filed Date</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Due Date</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Reminder</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Repeat</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Last Updated</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <React.Fragment key={row.id}>
+                <TableRow>
+                  <TableCell>
+                    <TextField
+                      value={row.docType || ""}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "docType", e.target.value)
+                      }
+                      variant="standard"
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <FormControl fullWidth variant="standard">
+                      <Select
+                        value={row.frequency}
+                        onChange={(e) =>
+                          handleInputChange(row.id, "frequency", e.target.value)
+                        }
+                      >
+                        <MenuItem value="daily">Daily</MenuItem>
+                        <MenuItem value="weekly">Weekly</MenuItem>
+                        <MenuItem value="monthly">Monthly</MenuItem>
+                        <MenuItem value="quarterly">Quarterly</MenuItem>
+                        <MenuItem value="yearly">Yearly</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={row.description || ""}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "description", e.target.value)
+                      }
+                      variant="standard"
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={row.document || ""}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "document", e.target.value)
+                      }
+                      variant="standard"
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={row.status || ""}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "status", e.target.value)
+                      }
+                      variant="standard"
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DatePicker
+                      value={row.filedDate}
+                      onChange={(newValue) =>
+                        handleInputChange(row.id, "filedDate", newValue)
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} variant="standard" fullWidth />
+                      )}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DatePicker
+                      value={row.dueDate}
+                      onChange={(newValue) =>
+                        handleInputChange(row.id, "dueDate", newValue)
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} variant="standard" fullWidth />
+                      )}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.reminder || false}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "reminder", e.target.checked)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.repeat || false}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "repeat", e.target.checked)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DatePicker
+                      value={row.lastUpdated}
+                      onChange={(newValue) =>
+                        handleInputChange(row.id, "lastUpdated", newValue)
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} variant="standard" fullWidth />
+                      )}
+                      disabled
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleDeleteRow(row.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={11}
+                    sx={{
+                      py: 0,
+                      borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                    }}
+                  />
+                </TableRow>
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </LocalizationProvider>
   );
-}
+};

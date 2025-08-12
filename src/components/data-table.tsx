@@ -113,12 +113,25 @@ export const DataTable: React.FC<CustomTableProps> = ({
         sortModel={sortModel}
         onSortModelChange={onSortModelChange}
         disableColumnMenu={true}
+        filterMode="client"
         sx={{
+          "& .MuiDataGrid-row": {
+            borderBottom: "1px solid rgba(224, 224, 224, 1)",
+            "&:last-child": {
+              borderBottom: "none",
+            },
+          },
+          "& .MuiDataGrid-row:hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+          "& .MuiDataGrid-cell": {
+            borderRight: "none",
+            borderLeft: "none",
+          },
           ".MuiDataGrid-columnSeparator": { display: "none" },
           ".MuiDataGrid-iconButtonContainer": { display: "none" },
           ".MuiDataGrid-columnHeader": { backgroundColor: "secondary.main" },
         }}
-        filterMode="client"
       />
     </Box>
   );
