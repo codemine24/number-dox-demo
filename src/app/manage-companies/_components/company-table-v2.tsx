@@ -23,11 +23,11 @@ import DatePicker from "@mui/lab/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CustomSelect } from "./custom-select";
+import { CustomInputField } from "./custom-input";
 
 interface TableRowData {
   id: number;
   docType: string;
-  category: string;
   frequency: string;
   description: string;
   document: string;
@@ -43,9 +43,8 @@ export const CompanyTableV2 = () => {
   const [rows, setRows] = React.useState<TableRowData[]>([
     {
       id: 1,
-      docType: "Invoice",
-      category: "Tax",
-      frequency: "weekly",
+      docType: "value1",
+      frequency: "value1",
       description: "",
       document: "",
       status: "Pending",
@@ -59,12 +58,16 @@ export const CompanyTableV2 = () => {
 
   const handleAddRow = () => {
     const newRow: TableRowData = {
-      id: rows.length + 1,
-      name: "",
+      id: 1,
+      docType: "value1",
       frequency: "weekly",
+      description: "Description",
       document: "",
+      status: "Pending",
+      filedDate: null,
       dueDate: null,
       reminder: false,
+      repeat: false,
       lastUpdated: new Date(),
     };
     setRows([...rows, newRow]);
@@ -124,9 +127,8 @@ export const CompanyTableV2 = () => {
                     <CustomSelect
                       value={row.docType}
                       options={[
-                        { value: "option1", label: "value1" },
-                        { value: "option2", label: "value2" },
-                        { value: "option3", label: "value3" },
+                        { label: "Full accounts", value: "value1" },
+                        { label: "Dormant Company", value: "value2" },
                       ]}
                       onChange={(e: any) =>
                         handleInputChange(row.id, "docType", e.target.value)
@@ -136,25 +138,32 @@ export const CompanyTableV2 = () => {
                   <TableCell>
                     <FormControl fullWidth variant="standard">
                       <CustomSelect
-                        value="value"
+                        value={row.frequency}
                         options={[
-                          { value: "option1", label: "value1" },
-                          { value: "option2", label: "value2" },
-                          { value: "option3", label: "value3" },
+                          { label: "annual", value: "value1" },
+                          { label: "monthly", value: "value2" },
+                          { label: "weekly", value: "value3" },
                         ]}
-                        onChange={(e) => console.log(e)}
+                        onChange={(e: any) =>
+                          handleInputChange(row.id, "frequency", e.target.value)
+                        }
                       />
                     </FormControl>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={row.description || ""}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "description", e.target.value)
-                      }
-                      variant="standard"
-                      fullWidth
-                    />
+                    <TableCell>
+                      <CustomInputField
+                        value={row.description || ""}
+                        placeholder="Description"
+                        onChange={(e) =>
+                          handleInputChange(
+                            row.id,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
                   </TableCell>
                   <TableCell>
                     <TextField
