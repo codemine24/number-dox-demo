@@ -1,202 +1,210 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
 import {
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Typography,
-    Toolbar,
-    Divider,
-    Box,
-    Collapse,
-    IconButton,
-    Link,
-} from "@mui/material"
+  Business as BusinessIcon,
+  ChevronLeft,
+  ChevronRight,
+  Circle as CircleIcon,
+  Dashboard as DashboardIcon,
+  ExpandLess,
+  ExpandMore,
+  People as PeopleIcon,
+  Settings as SettingsIcon,
+} from "@mui/icons-material";
 import {
-    Dashboard as DashboardIcon,
-    Business as BusinessIcon,
-    People as PeopleIcon,
-    Settings as SettingsIcon,
-    ExpandLess,
-    ExpandMore,
-    Circle as CircleIcon,
-    ChevronLeft,
-    ChevronRight,
-} from "@mui/icons-material"
-import { usePathname } from "next/navigation"
+  Box,
+  Collapse,
+  Divider,
+  Drawer,
+  IconButton,
+  Link,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import { usePathname } from "next/navigation";
+import React, { useState } from "react";
 
-const drawerWidth = 260
-const collapsedDrawerWidth = 60
+const drawerWidth = 260;
+const collapsedDrawerWidth = 60;
 
 interface MenuItem {
-    text: string
-    icon: React.ReactNode
-    href?: string
-    active?: boolean
-    children?: MenuItem[]
+  text: string;
+  icon: React.ReactNode;
+  href?: string;
+  active?: boolean;
+  children?: MenuItem[];
 }
 
+export const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  const path = usePathname();
+  const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
 
-export default function Sidebar() {
-    const [isOpen, setIsOpen] = useState(true)
-    const path = usePathname()
-    const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({})
+  const handleToggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
 
-    const handleToggleSidebar = () => {
-        setIsOpen(!isOpen)
-    }
+  const handleToggleItem = (itemText: string) => {
+    setOpenItems((prev) => ({
+      ...prev,
+      [itemText]: !prev[itemText],
+    }));
+  };
 
-    const handleToggleItem = (itemText: string) => {
-        setOpenItems((prev) => ({
-            ...prev,
-            [itemText]: !prev[itemText],
-        }))
-    }
-
-    const sidebarItems: MenuItem[] = [
+  const sidebarItems: MenuItem[] = [
+    {
+      text: "Dashboard",
+      href: "/",
+      active: path === "/",
+      icon: <DashboardIcon />,
+    },
+    {
+      text: "Manage Companies",
+      href: "/manage-companies",
+      icon: <BusinessIcon />,
+      active: path === "/manage-companies",
+    },
+    {
+      text: "Manage Users",
+      icon: <PeopleIcon />,
+      href: "/manage-users",
+      active: path === "/manage-users",
+    },
+    {
+      text: "Settings",
+    //   href: "/settings",
+    //   active: path === "/settings",
+      icon: <SettingsIcon />,
+      children: [
         {
-            text: "Dashboard",
-            href: "/",
-            active: path === "/",
-            icon: <DashboardIcon />
+          text: "All Users",
+          href: "/settings/all",
+          active: path === "/settings/all",
+          icon: <CircleIcon sx={{ fontSize: 8 }} />,
         },
         {
-            text: "Manage Companies",
-            href: "/manage-companies",
-            icon: <BusinessIcon />,
-            active: path === "/manage-companies",
+          text: "Admin Users",
+          href: "/settings/admin",
+          active: path === "/settings/admin",
+          icon: <CircleIcon sx={{ fontSize: 8 }} />,
         },
-        {
-            text: "Manage Users",
-            icon: <PeopleIcon />,
-            children: [
-                {
-                    text: "All Users",
-                    href: "/manage-users/all",
-                    active: path === "/manage-users/all",
-                    icon: <CircleIcon sx={{ fontSize: 8 }} />
-                },
-                {
-                    text: "Admin Users",
-                    href: "/manage-users/admin",
-                    active: path === "/manage-users/admin",
-                    icon: <CircleIcon sx={{ fontSize: 8 }} />
-                },
-            ],
-        },
-        {
-            text: "Settings",
-            href: "/settings",
-            active: path === "/settings",
-            icon: <SettingsIcon />
-        },
-    ]
+      ],
+    },
+  ];
 
-    const renderMenuItem = (item: MenuItem, level = 0) => {
-        const hasChildren = item.children && item.children.length > 0
-        const isItemOpen = openItems[item.text]
-
-        return (
-            <React.Fragment key={item.text}>
-                <ListItem disablePadding>
-                    <ListItemButton
-                        component={Link}
-                        href={item.href}
-                        onClick={() => hasChildren && handleToggleItem(item.text)}
-                        sx={{
-                            backgroundColor: item.active ? "primary.main" : "transparent",
-                            color: item.active ? "white" : "inherit",
-                            "&:hover": {
-                                backgroundColor: item.active ? "primary.main" : "rgba(0, 0, 0, 0.04)",
-                            },
-                            minHeight: 48,
-                        }}
-                    >
-                        <ListItemIcon
-                            sx={{
-                                color: item.active ? "white" : "inherit",
-                                minWidth: isOpen ? 40 : "auto",
-                                justifyContent: "center",
-                            }}
-                        >
-                            {item.icon}
-                        </ListItemIcon>
-                        {isOpen && (
-                            <>
-                                <ListItemText primary={item.text} slotProps={{ primary: { fontSize: 14 } }} />
-                                {hasChildren && (isItemOpen ? <ExpandLess /> : <ExpandMore />)}
-                            </>
-                        )}
-                    </ListItemButton>
-                </ListItem>
-                {hasChildren && isOpen && (
-                    <Collapse in={isItemOpen} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            {item.children!.map((child) => renderMenuItem(child, level + 1))}
-                        </List>
-                    </Collapse>
-                )}
-            </React.Fragment>
-        )
-    }
+  const renderMenuItem = (item: MenuItem, level = 0) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const isItemOpen = openItems[item.text];
 
     return (
-        <Drawer
-            variant="permanent"
+      <React.Fragment key={item.text}>
+        <ListItem disablePadding sx={{ px: isOpen ? 2 : 0, borderRadius: 2 }}>
+          <ListItemButton
+            component={Link}
+            href={item.href}
+            onClick={() => hasChildren && handleToggleItem(item.text)}
             sx={{
-                height: "calc(100vh - 64px)",
-                width: isOpen ? drawerWidth : collapsedDrawerWidth,
-                flexShrink: 0,
-                overflow: "visible",
-                transition: "width 0.3s",
-                "& .MuiDrawer-paper": {
-                    width: isOpen ? drawerWidth : collapsedDrawerWidth,
-                    boxSizing: "border-box",
-                    backgroundColor: "background.paper",
-                    transition: "width 0.3s",
-                    overflow: "visible",
-                    position: "relative",
-                    zIndex: 98,
-                },
+              backgroundColor: item.active ? "primary.main" : "transparent",
+              color: item.active ? "white" : "inherit",
+              borderRadius: 3,
+              "&:hover": {
+                backgroundColor: item.active
+                  ? "primary.main"
+                  : "rgba(0, 0, 0, 0.04)",
+              },
+              minHeight: 48,
             }}
-        >
-            {/* Toggle Button Toolbar */}
-            <IconButton
-                onClick={handleToggleSidebar}
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    transform: "translateX(50%)",
-                    zIndex: 99,
-                    color: "#fff",
-                    backgroundColor: "text.primary",
-                    width: 30,
-                    height: 30,
-                    "&:hover": {
-                        backgroundColor: "text.primary",
-                    },
-                }}
+          >
+            <ListItemIcon
+              sx={{
+                color: item.active ? "white" : "inherit",
+                minWidth: isOpen ? 40 : "auto",
+                justifyContent: "center",
+              }}
             >
-                {isOpen ? <ChevronLeft fontSize="small" /> : <ChevronRight fontSize="small" />}
-            </IconButton>
-
-
-            <Divider />
-            <List>{sidebarItems.map((item) => renderMenuItem(item))}</List>
-
+              {item.icon}
+            </ListItemIcon>
             {isOpen && (
-                <Box sx={{ mt: "auto", p: 2 }}>
-                    <Typography variant="caption" color="textSecondary">
-                        Logout
-                    </Typography>
-                </Box>
+              <>
+                <ListItemText
+                  primary={item.text}
+                  slotProps={{ primary: { fontSize: 14 } }}
+                />
+                {hasChildren && (isItemOpen ? <ExpandLess /> : <ExpandMore />)}
+              </>
             )}
-        </Drawer>
+          </ListItemButton>
+        </ListItem>
+        {hasChildren && isOpen && (
+          <Collapse in={isItemOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {item.children!.map((child) => renderMenuItem(child, level + 1))}
+            </List>
+          </Collapse>
+        )}
+      </React.Fragment>
+    );
+  };
 
-    )
-}
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        height: "calc(100vh - 64px)",
+        width: isOpen ? drawerWidth : collapsedDrawerWidth,
+        flexShrink: 0,
+        overflow: "visible",
+        transition: "width 0.3s",
+        "& .MuiDrawer-paper": {
+          width: isOpen ? drawerWidth : collapsedDrawerWidth,
+          boxSizing: "border-box",
+          backgroundColor: "background.paper",
+          transition: "width 0.3s",
+          overflow: "visible",
+          position: "relative",
+          zIndex: 98,
+        },
+      }}
+    >
+      {/* Toggle Button Toolbar */}
+      <IconButton
+        onClick={handleToggleSidebar}
+        sx={{
+          position: "absolute",
+          top: 1,
+          right: 0,
+          transform: "translateX(50%)",
+          zIndex: 99,
+          color: "#fff",
+          backgroundColor: "text.primary",
+          width: 20,
+          height: 20,
+          "&:hover": {
+            backgroundColor: "text.primary",
+          },
+        }}
+      >
+        {isOpen ? (
+          <ChevronLeft fontSize="small" />
+        ) : (
+          <ChevronRight fontSize="small" />
+        )}
+      </IconButton>
+
+      <Divider />
+      <List>{sidebarItems.map((item) => renderMenuItem(item))}</List>
+
+      {isOpen && (
+        <Box sx={{ mt: "auto", p: 2 }}>
+          <Typography variant="caption" color="textSecondary">
+            Logout
+          </Typography>
+        </Box>
+      )}
+    </Drawer>
+  );
+};
