@@ -26,6 +26,7 @@ import { AddDocumentModal } from "@/components/document-form-modal";
 
 interface TableRowData {
   id: number;
+  isRowEditable: boolean;
   docType: string;
   frequency: string;
   description: string;
@@ -53,6 +54,7 @@ export const CompanyTableV2 = () => {
   const [rows, setRows] = React.useState<TableRowData[]>([
     {
       id: 1,
+      isRowEditable: false,
       docType: "value1",
       frequency: "value1",
       description: "",
@@ -69,6 +71,7 @@ export const CompanyTableV2 = () => {
   const handleAddRow = () => {
     const newRow: TableRowData = {
       id: 1,
+      isRowEditable: true,
       docType: "value1",
       frequency: "weekly",
       description: "Description",
