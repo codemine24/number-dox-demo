@@ -6,32 +6,25 @@ import {
   ChevronRight,
   Circle as CircleIcon,
   Dashboard as DashboardIcon,
-  ExpandLess,
-  ExpandMore,
   People as PeopleIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
 import {
   Box,
-  Collapse,
-  Divider,
   Drawer,
   IconButton,
-  Link,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Typography,
 } from "@mui/material";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import { LogoutButton } from "./logout-button";
+import { MenuItem } from "./menu-item";
 
 const drawerWidth = 260;
 const collapsedDrawerWidth = 60;
 
-interface MenuItem {
+export interface MenuItem {
   text: string;
   icon: React.ReactNode;
   href?: string;
@@ -76,8 +69,6 @@ export const Sidebar = () => {
     },
     {
       text: "Settings",
-    //   href: "/settings",
-    //   active: path === "/settings",
       icon: <SettingsIcon />,
       children: [
         {
@@ -95,60 +86,6 @@ export const Sidebar = () => {
       ],
     },
   ];
-
-  const renderMenuItem = (item: MenuItem, level = 0) => {
-    const hasChildren = item.children && item.children.length > 0;
-    const isItemOpen = openItems[item.text];
-
-    return (
-      <React.Fragment key={item.text}>
-        <ListItem disablePadding sx={{ px: isOpen ? 2 : 0, borderRadius: 2 }}>
-          <ListItemButton
-            component={Link}
-            href={item.href}
-            onClick={() => hasChildren && handleToggleItem(item.text)}
-            sx={{
-              backgroundColor: item.active ? "primary.main" : "transparent",
-              color: item.active ? "white" : "inherit",
-              borderRadius: 3,
-              "&:hover": {
-                backgroundColor: item.active
-                  ? "primary.main"
-                  : "rgba(0, 0, 0, 0.04)",
-              },
-              minHeight: 48,
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                color: item.active ? "white" : "inherit",
-                minWidth: isOpen ? 40 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              {item.icon}
-            </ListItemIcon>
-            {isOpen && (
-              <>
-                <ListItemText
-                  primary={item.text}
-                  slotProps={{ primary: { fontSize: 14 } }}
-                />
-                {hasChildren && (isItemOpen ? <ExpandLess /> : <ExpandMore />)}
-              </>
-            )}
-          </ListItemButton>
-        </ListItem>
-        {hasChildren && isOpen && (
-          <Collapse in={isItemOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {item.children!.map((child) => renderMenuItem(child, level + 1))}
-            </List>
-          </Collapse>
-        )}
-      </React.Fragment>
-    );
-  };
 
   return (
     <Drawer
@@ -195,16 +132,28 @@ export const Sidebar = () => {
         )}
       </IconButton>
 
-      <Divider />
-      <List>{sidebarItems.map((item) => renderMenuItem(item))}</List>
+      <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
+        <List sx={{ pb: '0px !important' }}>
+          {sidebarItems.map((item) => <MenuItem
+            isOpen={isOpen}
+            openItems={openItems}
+            handleToggleItem={handleToggleItem}
+            item={item}
+            key={item.text}
+          />)}
+          <LogoutButton isOpen={isOpen} />
+        </List>
 
-      {isOpen && (
-        <Box sx={{ mt: "auto", p: 2 }}>
-          <Typography variant="caption" color="textSecondary">
-            Logout
+        {isOpen && <Box p={2} textAlign="center">
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Version: 2.0.1
           </Typography>
-        </Box>
-      )}
+          <Typography variant="body2">
+            Copyright© 2025 NUMBERDOX
+            All Rights Reserved
+          </Typography>
+        </Box>}
+      </Box>
     </Drawer>
   );
 };
