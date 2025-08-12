@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { alpha, Snackbar } from "@mui/material";
 import { Check } from "@mui/icons-material";
+import { CustomSelect } from "./custom-select";
 
 export const CompanyDetails = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -105,11 +106,16 @@ export const CompanyDetails = () => {
         <Grid size={{ xs: 12, md: 6, lg: 4, xl: 3 }}>
           <Typography variant="body2">Status</Typography>
           {isEdit ? (
-            <TextField
-              size="small"
-              fullWidth
+            <CustomSelect
+              sx={{ width: "100%", py: 0.5, bgcolor: "transparent", border: '1px solid #ccc' }}
               value={companyDetails.status}
-              onChange={(e) => setCompanyDetails({ ...companyDetails, status: e.target.value })}
+              options={[
+                { label: "Active", value: "Active" },
+                { label: "Inactive", value: "Inactive" },
+              ]}
+              onChange={(e: any) =>
+                setCompanyDetails({ ...companyDetails, status: e.target.value })
+              }
             />
           ) : (
             <Typography variant="body2" color="text.secondary">

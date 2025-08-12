@@ -1,71 +1,87 @@
-import * as React from "react";
+import AddIcon from "@mui/icons-material/Add";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
 import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Button,
-  IconButton,
-  Box,
-  Checkbox,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import DatePicker from "@mui/lab/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { PickerValue } from "@mui/x-date-pickers/internals";
+import dayjs from "dayjs";
+import * as React from "react";
+import { CustomInputField } from "./custom-input";
 import { CustomSelect } from "./custom-select";
+import { AddDocumentModal } from "@/components/document-form-modal";
 
 interface TableRowData {
   id: number;
+  isRowEditable: boolean;
   docType: string;
-  category: string;
   frequency: string;
   description: string;
   document: string;
   status: string;
-  filedDate: Date | null;
-  dueDate: Date | null;
-  reminder: boolean;
-  repeat: boolean;
-  lastUpdated: Date;
+  filedDate: PickerValue | null;
+  dueDate: PickerValue | null;
+  reminder: string;
+  repeat: string;
+  lastUpdated: PickerValue | null;
 }
 
 export const CompanyTableV2 = () => {
+  const [openDocument, setOpenDocument] = React.useState<{
+    open: boolean;
+    document_id: number | null;
+    file_name: string | null;
+  }>({
+    open: false,
+    document_id: null,
+    file_name: null,
+  });
+  console.log('openDocument', openDocument);
+  
   const [rows, setRows] = React.useState<TableRowData[]>([
     {
       id: 1,
-      docType: "Invoice",
-      category: "Tax",
-      frequency: "weekly",
+      isRowEditable: false,
+      docType: "value1",
+      frequency: "value1",
       description: "",
       document: "",
-      status: "Pending",
+      status: "value1",
       filedDate: null,
       dueDate: null,
-      reminder: false,
-      repeat: false,
-      lastUpdated: new Date(),
+      reminder: "",
+      repeat: "",
+      lastUpdated: null,
     },
   ]);
 
   const handleAddRow = () => {
     const newRow: TableRowData = {
-      id: rows.length + 1,
-      name: "",
+      id: 1,
+      isRowEditable: true,
+      docType: "value1",
       frequency: "weekly",
+      description: "Description",
       document: "",
+      status: "Pending",
+      filedDate: null,
       dueDate: null,
-      reminder: false,
-      lastUpdated: new Date(),
+      reminder: "",
+      repeat: "",
+      lastUpdated: null,
     };
     setRows([...rows, newRow]);
   };
@@ -100,7 +116,13 @@ export const CompanyTableV2 = () => {
         </Button>
       </Box>
       <TableContainer component={Paper}>
-        <Table>
+        <Table
+          sx={{
+            "& .MuiTableCell-root": {
+              padding: "6px",
+            },
+          }}
+        >
           <TableHead>
             <TableRow sx={{ bgcolor: "secondary.main" }}>
               <TableCell sx={{ whiteSpace: "nowrap" }}>Doc type</TableCell>
@@ -124,9 +146,8 @@ export const CompanyTableV2 = () => {
                     <CustomSelect
                       value={row.docType}
                       options={[
-                        { value: "option1", label: "value1" },
-                        { value: "option2", label: "value2" },
-                        { value: "option3", label: "value3" },
+                        { label: "Full accounts", value: "value1" },
+                        { label: "Dormant Company", value: "value2" },
                       ]}
                       onChange={(e: any) =>
                         handleInputChange(row.id, "docType", e.target.value)
@@ -136,100 +157,133 @@ export const CompanyTableV2 = () => {
                   <TableCell>
                     <FormControl fullWidth variant="standard">
                       <CustomSelect
-                        value="value"
+                        value={row.frequency}
                         options={[
-                          { value: "option1", label: "value1" },
-                          { value: "option2", label: "value2" },
-                          { value: "option3", label: "value3" },
+                          { label: "annual", value: "value1" },
+                          { label: "monthly", value: "value2" },
+                          { label: "weekly", value: "value3" },
                         ]}
-                        onChange={(e) => console.log(e)}
+                        onChange={(e: any) =>
+                          handleInputChange(row.id, "frequency", e.target.value)
+                        }
                       />
                     </FormControl>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={row.description || ""}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "description", e.target.value)
-                      }
-                      variant="standard"
-                      fullWidth
-                    />
+                    <TableCell>
+                      <CustomInputField
+                        value={row.description || ""}
+                        placeholder="Description"
+                        onChange={(e) =>
+                          handleInputChange(
+                            row.id,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={row.document || ""}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "document", e.target.value)
+                    <Button
+                      onClick={() =>
+                        setOpenDocument({
+                          open: true,
+                          document_id: row.id,
+                          file_name: null,
+                        })
                       }
-                      variant="standard"
-                      fullWidth
-                    />
+                      variant="outlined"
+                      component="label"
+                      sx={{
+                        border: "1px solid",
+                        borderColor: "text.primary",
+                        color: "text.secondary",
+                        textTransform: "none",
+                        borderRadius: 2,
+                        py: 0,
+                        px: 1,
+                      }}
+                    >
+                      <AttachFileIcon
+                        sx={{ transform: "rotate(45deg)", fontSize: 20 }}
+                      />
+                      {openDocument.file_name && openDocument.document_id === row.id
+                        ? openDocument.file_name
+                        : "View"}
+                    </Button>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={row.status || ""}
-                      onChange={(e) =>
+                    <CustomSelect
+                      value={row.status}
+                      options={[
+                        { label: "Draft", value: "value1" },
+                        { label: "Publish", value: "value2" },
+                        { label: "Pending", value: "value3" },
+                      ]}
+                      onChange={(e: any) =>
                         handleInputChange(row.id, "status", e.target.value)
                       }
-                      variant="standard"
-                      fullWidth
                     />
                   </TableCell>
                   <TableCell>
-                    <DatePicker
+                    <DesktopDatePicker
+                      defaultValue={dayjs("2022-04-17")}
                       value={row.filedDate}
-                      onChange={(newValue) =>
-                        handleInputChange(row.id, "filedDate", newValue)
+                      onChange={(date: any) =>
+                        handleInputChange(row.id, "filedDate", date)
                       }
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" fullWidth />
-                      )}
                     />
                   </TableCell>
+
                   <TableCell>
-                    <DatePicker
+                    <DesktopDatePicker
+                      defaultValue={dayjs("2022-04-17")}
                       value={row.dueDate}
-                      onChange={(newValue) =>
-                        handleInputChange(row.id, "dueDate", newValue)
+                      onChange={(date: any) =>
+                        handleInputChange(row.id, "dueDate", date)
                       }
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" fullWidth />
-                      )}
                     />
                   </TableCell>
                   <TableCell>
-                    <Checkbox
-                      checked={row.reminder || false}
+                    <CustomInputField
+                      value={row.reminder || ""}
+                      placeholder="45"
                       onChange={(e) =>
-                        handleInputChange(row.id, "reminder", e.target.checked)
+                        handleInputChange(row.id, "reminder", e.target.value)
                       }
                     />
                   </TableCell>
                   <TableCell>
-                    <Checkbox
-                      checked={row.repeat || false}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "repeat", e.target.checked)
+                    <CustomSelect
+                      value={row.repeat}
+                      options={[
+                        { label: "Daily", value: "value1" },
+                        { label: "Weekly", value: "value2" },
+                      ]}
+                      onChange={(e: any) =>
+                        handleInputChange(row.id, "repeat", e.target.value)
                       }
                     />
                   </TableCell>
                   <TableCell>
-                    <DatePicker
+                    <DesktopDatePicker
+                      defaultValue={dayjs("2022-04-17")}
                       value={row.lastUpdated}
-                      onChange={(newValue) =>
-                        handleInputChange(row.id, "lastUpdated", newValue)
+                      onChange={(date: any) =>
+                        handleInputChange(row.id, "lastUpdated", date)
                       }
-                      renderInput={(params) => (
-                        <TextField {...params} variant="standard" fullWidth />
-                      )}
-                      disabled
                     />
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleDeleteRow(row.id)}>
-                      <DeleteIcon />
-                    </IconButton>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <IconButton onClick={() => handleDeleteRow(row.id)}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteRow(row.id)}>
+                        <EditIcon />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -246,6 +300,25 @@ export const CompanyTableV2 = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <AddDocumentModal
+        open={openDocument.open}
+        onClose={() =>
+          setOpenDocument({
+            open: false,
+            document_id: null,
+            file_name: null,
+          })
+        }
+        onSave={(value) =>
+          setOpenDocument({
+            open: false,
+            document_id: value.document_id,
+            file_name: value.file_name,
+          })
+        }
+        documentId={1}
+      />
     </LocalizationProvider>
   );
 };
