@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
-import { SectionHeader } from "./_components/section-header";
 import { CompanyDetails } from "./_components/company-details";
 import { CompanyTableContent } from "./_components/company-table-content";
+import { SectionHeader } from "./_components/section-header";
 
 const ManageCompaniesPage = () => {
   return (
